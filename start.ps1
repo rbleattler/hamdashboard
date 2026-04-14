@@ -67,8 +67,9 @@ Write-Host "  Found Node.js $nodeVersion" -ForegroundColor Green
 
 # Check minimum version (v18+)
 $versionNumber = $nodeVersion -replace '^v', ''
-$majorVersion = [int]($versionNumber.Split('.')[0])
-if ($majorVersion -lt 18) {
+$majorVersion = 0
+$parsedOk = [int]::TryParse($versionNumber.Split('.')[0], [ref]$majorVersion)
+if ($parsedOk -and $majorVersion -lt 18) {
     Write-Host ""
     Write-Host "WARNING: Node.js version 18 or newer is recommended." -ForegroundColor Yellow
     Write-Host "  You have $nodeVersion. Some features may not work." -ForegroundColor Yellow

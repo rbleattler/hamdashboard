@@ -59,7 +59,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# ---- Helper: coloured output --------------------------------
+# ---- Helper: colored output ----------------------------------
 info()    { printf '\033[0;36m%s\033[0m\n' "$*"; }
 success() { printf '\033[0;32m%s\033[0m\n' "$*"; }
 warn()    { printf '\033[0;33m%s\033[0m\n' "$*"; }
@@ -123,7 +123,7 @@ success "  Found Node.js $NODE_VERSION"
 
 # Check minimum version (v18+)
 MAJOR_VERSION=$(echo "$NODE_VERSION" | sed 's/^v//' | cut -d. -f1)
-if [ "$MAJOR_VERSION" -lt 18 ] 2>/dev/null; then
+if [[ "$MAJOR_VERSION" =~ ^[0-9]+$ ]] && [ "$MAJOR_VERSION" -lt 18 ]; then
     echo ""
     warn "WARNING: Node.js version 18 or newer is recommended."
     warn "  You have $NODE_VERSION. Some features may not work."
