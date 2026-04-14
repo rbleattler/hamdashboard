@@ -90,7 +90,7 @@ export function useWheelZoom(
 
     function onWheel(e: WheelEvent) {
       e.preventDefault();
-      let deltaY = e.deltaY || 0;
+      const deltaY = e.deltaY || 0;
 
       const rect = img!.getBoundingClientRect();
       const offsetX = e.pageX - rect.left - window.pageXOffset;

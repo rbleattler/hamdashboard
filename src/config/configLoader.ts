@@ -120,7 +120,7 @@ const coreMenuNames = [
   'prev',
 ];
 
-function parseMenuItem(item: LegacyMenuItem, index: number): MenuItem {
+function parseMenuItem(item: LegacyMenuItem): MenuItem {
   const text = String(item[1] || '').trim();
   const link = String(item[2] || '').trim();
   const titleLower = text.toLowerCase();
@@ -204,9 +204,9 @@ function ensureBackMenuItem(menuItems: LegacyMenuItem[]): LegacyMenuItem[] {
 export function processRawConfig(raw: JsonConfig): DashboardConfig {
   const processed = replaceDatePlaceholders(raw);
 
-  let aURL = processed.aURL ? ensureBackMenuItem(processed.aURL) : [];
+  const aURL = processed.aURL ? ensureBackMenuItem(processed.aURL) : [];
 
-  const menuItems = aURL.map((item, i) => parseMenuItem(item, i));
+  const menuItems = aURL.map((item) => parseMenuItem(item));
 
   let tiles: TileConfig[];
   if (processed.aIMG) {
@@ -223,7 +223,7 @@ export function processRawConfig(raw: JsonConfig): DashboardConfig {
     } else {
       // Legacy format: [title, url1, url2, ...]
       tiles = parseTilesFromLegacy(
-        processed.aIMG as Array<[string | string[], ...string[]]>,
+        processed.aIMG as unknown as Array<[string | string[], ...string[]]>,
         (processed as unknown as { tileDelay?: number[] }).tileDelay
       );
     }
