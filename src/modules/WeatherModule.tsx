@@ -4,6 +4,8 @@ interface WeatherModuleProps {
   stationId: string;
   apiKey: string;
   units?: string;
+  /** When true, renders a compact tile-sized view with only key readings */
+  compact?: boolean;
 }
 
 interface WeatherData {
@@ -38,7 +40,7 @@ function windDirection(deg: number): string {
   return dirs[Math.round(deg / 22.5) % 16];
 }
 
-export function WeatherModule({ stationId, apiKey, units = 'e' }: WeatherModuleProps) {
+export function WeatherModule({ stationId, apiKey, units = 'e', compact = false }: WeatherModuleProps) {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -100,7 +102,7 @@ export function WeatherModule({ stationId, apiKey, units = 'e' }: WeatherModuleP
 
   if (loading) {
     return (
-      <div style={containerStyle}>
+      <div style={compact ? compactContainerStyle : containerStyle}>
         <span style={loadingStyle}>Loading weather…</span>
       </div>
     );
@@ -108,7 +110,7 @@ export function WeatherModule({ stationId, apiKey, units = 'e' }: WeatherModuleP
 
   if (error) {
     return (
-      <div style={containerStyle}>
+      <div style={compact ? compactContainerStyle : containerStyle}>
         <span style={errorStyle}>⚠ {error}</span>
         <span style={{ ...smallText, marginTop: 8 }}>
           Station: {stationId}
@@ -118,6 +120,25 @@ export function WeatherModule({ stationId, apiKey, units = 'e' }: WeatherModuleP
   }
 
   if (!weather) return null;
+
+  if (compact) {
+    return (
+      <div style={compactContainerStyle}>
+        {/* Compact: large temp centered with key readings below */}
+        <div style={compactStationRow}>
+          <span style={compactStationText}>{weather.neighborhood || weather.stationID}</span>
+        </div>
+        <div style={compactTempRow}>
+          <span style={compactTempText}>{weather.temp ?? '--'}{labels.temp}</span>
+        </div>
+        <div style={compactReadingsRow}>
+          <span style={compactReading}>💧 {weather.humidity ?? '--'}%</span>
+          <span style={compactReading}>🌬️ {windDirection(weather.winddir)} {weather.windSpeed}{labels.speed}</span>
+          <span style={compactReading}>📊 {weather.pressure ?? '--'}{labels.pressure}</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={containerStyle}>
@@ -306,4 +327,60 @@ const errorStyle: React.CSSProperties = {
   color: '#f59e0b',
   margin: 'auto',
   textAlign: 'center',
+};
+
+// --- Compact tile styles ---
+
+const compactContainerStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
+  width: '100%',
+  padding: '8px',
+  boxSizing: 'border-box',
+  background: 'linear-gradient(135deg, hsl(210 20% 12%), hsl(210 15% 8%))',
+  color: '#e2e8f0',
+  fontFamily: '"Roboto Condensed", "Segoe UI", sans-serif',
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: 4,
+};
+
+const compactStationRow: React.CSSProperties = {
+  textAlign: 'center',
+  flexShrink: 0,
+};
+
+const compactStationText: React.CSSProperties = {
+  fontSize: 'clamp(8px, 0.9vw, 12px)',
+  fontWeight: 600,
+  color: '#94a3b8',
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+};
+
+const compactTempRow: React.CSSProperties = {
+  textAlign: 'center',
+  flexShrink: 0,
+};
+
+const compactTempText: React.CSSProperties = {
+  fontSize: 'clamp(32px, 5vw, 64px)',
+  fontWeight: 300,
+  lineHeight: 1.1,
+  color: '#f1f5f9',
+};
+
+const compactReadingsRow: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'center',
+  gap: 'clamp(6px, 1vw, 16px)',
+  flexWrap: 'wrap',
+  flexShrink: 0,
+};
+
+const compactReading: React.CSSProperties = {
+  fontSize: 'clamp(9px, 0.85vw, 13px)',
+  color: '#94a3b8',
+  whiteSpace: 'nowrap',
 };

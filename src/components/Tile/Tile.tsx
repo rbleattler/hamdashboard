@@ -81,6 +81,7 @@ export function Tile({ config, index, paused, onFullScreen }: TileProps) {
           stationId={parsed.stationId}
           apiKey={parsed.apiKey}
           units={parsed.units}
+          compact
         />
       )}
 
