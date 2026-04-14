@@ -200,12 +200,24 @@ function App() {
 
       // Core menu actions
       switch (text) {
-        case 'back':
-          setMenuOverlayItem(null);
-          setShowSettings(false);
-          setShowSources(false);
-          setFullScreenIndex(null);
+        case 'back': {
+          // If any overlay/popover is open, close it first
+          const hasOverlay =
+            menuOverlayItem !== null ||
+            showSettings ||
+            showSources ||
+            fullScreenIndex !== null;
+          if (hasOverlay) {
+            setMenuOverlayItem(null);
+            setShowSettings(false);
+            setShowSources(false);
+            setFullScreenIndex(null);
+          } else {
+            // No overlay open — navigate back via breadcrumb
+            window.location.href = buildPreviousUrl();
+          }
           break;
+        }
         case 'refresh':
           window.location.reload();
           break;
@@ -237,7 +249,7 @@ function App() {
           break;
       }
     },
-    [openConfigFileDialog]
+    [openConfigFileDialog, menuOverlayItem, showSettings, showSources, fullScreenIndex]
   );
 
   // Handle full-screen view

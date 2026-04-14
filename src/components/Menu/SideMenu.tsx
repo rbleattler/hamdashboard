@@ -2,7 +2,7 @@ import type { MenuItem } from '../../config/configTypes';
 import { MENU_WIDTH } from '../../utils/layoutConstants';
 
 /** Fixed-pixel width of the visible tab when the menu is collapsed. */
-const TAB_WIDTH = 25;
+const TAB_WIDTH = 8;
 
 interface SideMenuProps {
   items: MenuItem[];
