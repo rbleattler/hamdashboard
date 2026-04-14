@@ -1,6 +1,9 @@
 import type { MenuItem } from '../../config/configTypes';
 import { MENU_WIDTH } from '../../utils/layoutConstants';
 
+/** Fixed-pixel width of the visible tab when the menu is collapsed. */
+const TAB_WIDTH = 25;
+
 interface SideMenuProps {
   items: MenuItem[];
   side: 'L' | 'R';
@@ -18,32 +21,23 @@ export function SideMenu({ items, side, onMenuAction }: SideMenuProps) {
   return (
     <div
       id={menuId}
-      className="grid gap-[3px] absolute h-auto z-[5]"
+      className="grid gap-[3px] fixed h-auto z-[5]"
       style={{
-        marginTop: '10vh',
-        transition: '0.3s',
+        top: '10vh',
+        transition: 'transform 0.3s',
+        width: 'fit-content',
         ...(isLeft
-          ? { left: 'calc(-5.2vw - 0px)', width: 'auto' }
-          : { right: '-5px', width: '30px' }),
+          ? { left: 0, transform: `translateX(calc(-100% + ${TAB_WIDTH}px))` }
+          : { right: 0, transform: `translateX(calc(100% - ${TAB_WIDTH}px))` }),
       }}
       onMouseEnter={(e) => {
-        const el = e.currentTarget;
-        if (isLeft) {
-          el.style.width = MENU_WIDTH;
-          el.style.left = '0px';
-        } else {
-          el.style.width = MENU_WIDTH;
-          el.style.right = '0px';
-        }
+        e.currentTarget.style.transform = 'translateX(0)';
       }}
       onMouseLeave={(e) => {
-        const el = e.currentTarget;
         if (isLeft) {
-          el.style.width = 'auto';
-          el.style.left = 'calc(-5.2vw - 0px)';
+          e.currentTarget.style.transform = `translateX(calc(-100% + ${TAB_WIDTH}px))`;
         } else {
-          el.style.width = '30px';
-          el.style.right = '-5px';
+          e.currentTarget.style.transform = `translateX(calc(100% - ${TAB_WIDTH}px))`;
         }
       }}
     >
@@ -62,42 +56,23 @@ export function SideMenu({ items, side, onMenuAction }: SideMenuProps) {
               href="#"
               className={`menu-link ${iconClass}`}
               style={{
+                display: 'block',
                 backgroundColor: `#${item.color}`,
                 boxSizing: 'content-box',
-                position: 'relative',
-                float: 'inline-start',
                 transition: '0.3s',
                 paddingLeft: '15px',
                 paddingRight: '15px',
                 paddingTop: '12px',
                 paddingBottom: '8px',
-                width: isLeft ? '5vw' : MENU_WIDTH,
+                width: MENU_WIDTH,
                 textDecoration: 'none',
                 fontFamily: '"Bebas Neue", sans-serif',
-                fontSize: '1.2vw',
+                fontSize: 'clamp(12px, 1.2vw, 20px)',
                 fontWeight: 300,
                 textAlign: isLeft ? 'right' : 'left',
                 color: 'white',
                 borderRadius: isLeft ? '0 5px 5px 0' : '5px 0 0 5px',
                 boxShadow: '4px 4px 12px rgba(0, 0, 0, 0.5)',
-                ...(isLeft
-                  ? { left: 'calc(-0.2vw - 10px)' }
-                  : { right: 'calc(-0.2vw - 10px)' }),
-              }}
-              onMouseEnter={(e) => {
-                if (isLeft) {
-                  e.currentTarget.style.left = '0';
-                } else {
-                  e.currentTarget.style.right = '0';
-                  e.currentTarget.style.width = MENU_WIDTH;
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (isLeft) {
-                  e.currentTarget.style.left = 'calc(-0.2vw - 10px)';
-                } else {
-                  e.currentTarget.style.right = 'calc(-0.2vw - 10px)';
-                }
               }}
               onClick={(e) => {
                 e.preventDefault();

@@ -337,7 +337,7 @@ function App() {
       />
 
       {/* Main Content */}
-      <div className="fixed inset-0 overflow-hidden">
+      <div className="fixed inset-0 overflow-hidden flex flex-col">
         {/* Top Bar */}
         <TopBar centerText={config.topBarCenterText} />
 

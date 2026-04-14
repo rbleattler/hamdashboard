@@ -18,11 +18,11 @@ export function DashboardGrid({
 }: DashboardGridProps) {
   return (
     <div
-      className="grid gap-0 border-0 mb-0 overflow-hidden relative w-full"
+      className="grid gap-0 border-0 mb-0 overflow-hidden relative w-full flex-1"
       style={{
         gridTemplateColumns: `repeat(${layoutCols}, 1fr)`,
         gridTemplateRows: `repeat(${layoutRows}, 1fr)`,
-        height: '93vh',
+        minHeight: 0,
       }}
     >
       {tiles.map((tile, index) => (
