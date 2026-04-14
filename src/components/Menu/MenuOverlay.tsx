@@ -1,5 +1,6 @@
 import type { MenuItem } from '../../config/configTypes';
-import { isDark } from '../../utils/sourceHelpers';
+import { isDark, isWeather, parseSource } from '../../utils/sourceHelpers';
+import { WeatherModule } from '../../modules';
 import { MENU_WIDTH } from '../../utils/layoutConstants';
 
 interface MenuOverlayProps {
@@ -10,9 +11,8 @@ interface MenuOverlayProps {
 
 /**
  * Full-screen overlay for menu items that open external content.
- * Instead of using an iframe, opens content in a new tab or
- * shows it in a styled container. For external websites, opens
- * in a new tab for better UX and security.
+ * Handles weather| URLs by rendering the WeatherModule inline.
+ * Other URLs are rendered in an iframe with an option to open in a new tab.
  */
 export function MenuOverlay({
   visible,
@@ -21,11 +21,13 @@ export function MenuOverlay({
 }: MenuOverlayProps) {
   if (!visible || !menuItem) return null;
 
-  const dark = isDark(menuItem.url);
+  const isWeatherUrl = isWeather(menuItem.url);
+  const dark = !isWeatherUrl && isDark(menuItem.url);
   const url = dark ? menuItem.url.replace('dark|', '') : menuItem.url;
 
-  // Open the URL in a new tab instead of embedding in an iframe
-  // This is the modern replacement for the full-screen iframe overlay
+  // Parse weather source if applicable
+  const weatherParsed = isWeatherUrl ? parseSource(menuItem.url) : null;
+
   return (
     <div className="fixed inset-0 bg-black z-[1]" style={{ left: MENU_WIDTH, right: MENU_WIDTH }}>
       <div className="flex flex-col h-full w-full">
@@ -37,14 +39,16 @@ export function MenuOverlay({
             {menuItem.text}
           </span>
           <div className="flex gap-2">
-            <button
-              onClick={() => {
-                window.open(url, '_blank', 'noopener,noreferrer');
-              }}
-              className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm"
-            >
-              Open in New Tab ↗
-            </button>
+            {!isWeatherUrl && (
+              <button
+                onClick={() => {
+                  window.open(url, '_blank', 'noopener,noreferrer');
+                }}
+                className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm"
+              >
+                Open in New Tab ↗
+              </button>
+            )}
             <button
               onClick={onClose}
               className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
@@ -54,17 +58,25 @@ export function MenuOverlay({
           </div>
         </div>
         <div className="flex-1 relative">
-          <iframe
-            src={url}
-            className="absolute inset-0 h-full w-full border-0"
-            style={{
-              filter: dark ? 'invert(1) hue-rotate(180deg)' : 'none',
-              transform: `scale(${menuItem.scale})`,
-              transformOrigin: '0 0',
-            }}
-            title={menuItem.text}
-            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-          />
+          {isWeatherUrl && weatherParsed?.stationId && weatherParsed?.apiKey ? (
+            <WeatherModule
+              stationId={weatherParsed.stationId}
+              apiKey={weatherParsed.apiKey}
+              units={weatherParsed.units}
+            />
+          ) : (
+            <iframe
+              src={url}
+              className="absolute inset-0 h-full w-full border-0"
+              style={{
+                filter: dark ? 'invert(1) hue-rotate(180deg)' : 'none',
+                transform: `scale(${menuItem.scale})`,
+                transformOrigin: '0 0',
+              }}
+              title={menuItem.text}
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+            />
+          )}
         </div>
       </div>
     </div>

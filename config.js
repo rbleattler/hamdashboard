@@ -94,7 +94,7 @@ var aIMG = [
     "WEBSITE EXAMPLE",
     "iframe|https://globe.adsbexchange.com/?airport=YYZ",
   ],
-  ["VIDEO EXAMPLE", "https://himawari8.nict.go.jp/movie/720/20240611_pifd.mp4"],
+  ["WEATHER (WU)", "weather|KPAUPPER32|YOUR_API_KEY_HERE|e"],
   ["HF PROPAGATION",
     "https://www.hamqsl.com/solar101vhf.php"],
 ];
