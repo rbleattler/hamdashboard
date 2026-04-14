@@ -26,7 +26,7 @@ export function MenuOverlay({
   // Open the URL in a new tab instead of embedding in an iframe
   // This is the modern replacement for the full-screen iframe overlay
   return (
-    <div className="fixed inset-0 bg-black z-[1]">
+    <div className="fixed inset-0 bg-black z-[1]" style={{ left: '7vw', right: '7vw' }}>
       <div className="flex flex-col h-full w-full">
         <div className="flex items-center justify-between p-2 bg-[#333]">
           <span

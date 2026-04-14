@@ -37,6 +37,8 @@ export function SourcesOverlay({
         boxSizing: 'border-box',
         fontFamily: '"Roboto Condensed", sans-serif',
         color: 'white',
+        left: '7vw',
+        right: '7vw',
       }}
     >
       <div

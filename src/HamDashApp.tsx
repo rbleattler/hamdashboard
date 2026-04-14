@@ -203,6 +203,8 @@ function App() {
         case 'back':
           setMenuOverlayItem(null);
           setShowSettings(false);
+          setShowSources(false);
+          setFullScreenIndex(null);
           break;
         case 'refresh':
           window.location.reload();

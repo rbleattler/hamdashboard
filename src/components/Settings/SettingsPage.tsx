@@ -199,18 +199,22 @@ export function SettingsPage({
 
   return (
     <div
-      className="fixed inset-0 z-[5] overflow-y-auto"
+      className="fixed inset-0 z-[1] overflow-y-auto"
       style={{
         backgroundColor: 'aliceblue',
         fontFamily: 'Arial, sans-serif',
+        left: '7vw',
+        right: '7vw',
       }}
     >
       {/* Fixed header */}
       <div
-        className="fixed top-0 left-0 right-0 text-center p-2 z-[6]"
+        className="fixed top-0 text-center p-2 z-[2]"
         style={{
           backgroundColor: 'cadetblue',
           boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+          left: '7vw',
+          right: '7vw',
         }}
       >
         <button onClick={handleSave} className="settings-btn">

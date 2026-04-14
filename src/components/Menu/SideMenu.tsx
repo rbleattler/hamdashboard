@@ -17,7 +17,7 @@ export function SideMenu({ items, side, onMenuAction }: SideMenuProps) {
   return (
     <div
       id={menuId}
-      className="grid gap-[3px] absolute h-auto z-[2]"
+      className="grid gap-[3px] absolute h-auto z-[5]"
       style={{
         marginTop: '10vh',
         transition: '0.3s',
