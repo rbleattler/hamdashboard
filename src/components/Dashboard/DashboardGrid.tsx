@@ -16,20 +16,19 @@ export function DashboardGrid({
   paused,
   onFullScreen,
 }: DashboardGridProps) {
-  const tileWidth = `${99.6 / layoutCols}vw`;
-  const tileHeight = `${93 / layoutRows}vh`;
-
   return (
     <div
       className="grid gap-0 border-0 mb-0 overflow-hidden relative w-full"
       style={{
-        gridTemplateColumns: `repeat(${layoutCols}, auto)`,
+        gridTemplateColumns: `repeat(${layoutCols}, 1fr)`,
+        gridTemplateRows: `repeat(${layoutRows}, 1fr)`,
+        height: '93vh',
       }}
     >
       {tiles.map((tile, index) => (
         <div
           key={index}
-          style={{ width: tileWidth, height: tileHeight }}
+          className="w-full h-full overflow-hidden"
         >
           <Tile
             config={tile}

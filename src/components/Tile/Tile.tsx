@@ -53,7 +53,7 @@ export function Tile({ config, index, paused, onFullScreen }: TileProps) {
 
   return (
     <div
-      className="relative overflow-hidden flex justify-center items-center rounded-[5px]"
+      className="relative overflow-hidden flex justify-center items-center rounded-[5px] w-full h-full"
       style={{ border: '1px solid hsl(210deg 8% 50%)' }}
     >
       {/* Content based on type */}

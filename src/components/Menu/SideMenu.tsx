@@ -63,6 +63,7 @@ export function SideMenu({ items, side, onMenuAction }: SideMenuProps) {
               className={`menu-link ${iconClass}`}
               style={{
                 backgroundColor: `#${item.color}`,
+                boxSizing: 'content-box',
                 position: 'relative',
                 float: 'inline-start',
                 transition: '0.3s',
