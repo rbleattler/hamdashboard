@@ -343,7 +343,7 @@ const compactContainerStyle: React.CSSProperties = {
   fontFamily: '"Roboto Condensed", "Segoe UI", sans-serif',
   justifyContent: 'center',
   alignItems: 'center',
-  gap: 4,
+  gap: '4px',
 };
 
 const compactStationRow: React.CSSProperties = {
