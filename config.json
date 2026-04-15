@@ -28,7 +28,7 @@
     ["YOUTUBE EXAMPLE", "iframe|https://www.youtube.com/embed/fzPFaXAV_2Y?autoplay=1&mute=1", 30400],
     ["WEBSITE EXAMPLE", "iframe|https://globe.adsbexchange.com/?airport=YYZ", 60700],
     ["WEATHER (WU)", "weather|KPAUPPER32|YOUR_API_KEY_HERE|e", 300000],
-    ["511PA TRAFFIC CAM", "511pa|CAM-11-185", 60000],
+    ["511PA TRAFFIC CAM", "511pa|https://pa-se4.arcadis-ivds.com:8200/chan-3500/index.m3u8", 60000],
     ["HF PROPAGATION", "https://www.hamqsl.com/solar101vhf.php", 10800]
   ],  
   "aRSS": [

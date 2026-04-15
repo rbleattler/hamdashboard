@@ -2,16 +2,16 @@ import { useState, useEffect, useRef } from 'react';
 import Hls from 'hls.js';
 
 interface TrafficCamModuleProps {
-  /** PennDOT camera ID (e.g. "171_003"). Used to construct the HLS stream URL. */
-  cameraId: string;
+  /**
+   * Full HLS stream URL for the camera, taken from the 511PA site's
+   * data-videourl attribute (e.g. "https://pa-se4.arcadis-ivds.com:8200/chan-3500/index.m3u8").
+   */
+  streamUrl: string;
   /** When true, renders a compact tile-sized view */
   compact?: boolean;
   onDoubleClick?: (e: React.MouseEvent) => void;
   onContextMenu?: (e: React.MouseEvent) => void;
 }
-
-/** Base URL for PennDOT 511PA HLS camera streams */
-const STREAM_BASE = 'https://cwwp2.dot.pa.gov/rtplive';
 
 /** Whether hls.js polyfill is supported in this browser (static, won't change) */
 const HLS_JS_SUPPORTED = Hls.isSupported();
@@ -21,7 +21,7 @@ const HLS_JS_SUPPORTED = Hls.isSupported();
  * Streams live video using hls.js with automatic reconnection on failure.
  */
 export function TrafficCamModule({
-  cameraId,
+  streamUrl,
   compact = false,
   onDoubleClick,
   onContextMenu,
@@ -30,8 +30,6 @@ export function TrafficCamModule({
   const hlsRef = useRef<Hls | null>(null);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  const streamUrl = `${STREAM_BASE}/${encodeURIComponent(cameraId)}/playlist.m3u8`;
 
   useEffect(() => {
     const video = videoRef.current;
@@ -111,8 +109,8 @@ export function TrafficCamModule({
         {hasError ? (
           <div className="flex flex-col items-center gap-1 text-yellow-400 text-center px-2">
             <span style={{ fontSize: '1.2vw' }}>⚠ Camera Unavailable</span>
-            <span style={{ fontSize: '0.7vw' }} className="text-gray-400">
-              {cameraId}
+            <span style={{ fontSize: '0.7vw' }} className="text-gray-400 break-all">
+              {streamUrl}
             </span>
           </div>
         ) : (
@@ -151,10 +149,7 @@ export function TrafficCamModule({
         {hasError ? (
           <div className="flex flex-col items-center gap-2 text-yellow-400">
             <span className="text-2xl">⚠ Camera Unavailable</span>
-            <span className="text-sm text-gray-400">
-              Camera ID: {cameraId}
-            </span>
-            <span className="text-xs text-gray-500">
+            <span className="text-sm text-gray-400 break-all">
               Stream: {streamUrl}
             </span>
           </div>
@@ -181,8 +176,8 @@ export function TrafficCamModule({
         style={{ background: 'hsl(210deg 15% 15%)' }}
       >
         <div className="flex items-center gap-3">
-          <span className="text-xs text-gray-400">
-            Camera: {cameraId}
+          <span className="text-xs text-gray-400 truncate max-w-[50%]" title={streamUrl}>
+            {streamUrl}
           </span>
           <span className="text-xs text-red-400 font-bold">
             ● LIVE

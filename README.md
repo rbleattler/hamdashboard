@@ -300,22 +300,25 @@ The dashboard can display live video feeds from Pennsylvania's 511PA / PennDOT t
 
 **To add a traffic camera tile:**
 
-1. Find a camera on [511PA](https://www.511pa.com) and note its camera ID (visible in the camera's URL or details, e.g. `CAM-11-185`)
-2. Add a tile using the `511pa|` prefix:
+1. Go to [511PA](https://www.511pa.com) and find a camera
+2. Right-click the "Show Video" button and choose **Inspect** (or press F12)
+3. In the HTML, find the nearby `<div>` with a `data-videourl` attribute — copy that URL
+4. Add a tile using the `511pa|` prefix with the full video URL:
 
 ```js
 // config.js — add to aIMG array:
-["511PA TRAFFIC CAM", "511pa|CAM-11-185"],
+["511PA TRAFFIC CAM", "511pa|https://pa-se4.arcadis-ivds.com:8200/chan-3500/index.m3u8"],
 ```
 
-The format is: `511pa|CAMERA_ID`
+The format is: `511pa|HLS_VIDEO_URL`
 
-| Parameter   | Description                                                        |
-|-------------|--------------------------------------------------------------------|
-| `CAMERA_ID` | The PennDOT camera identifier (e.g. `CAM-11-185`, `171_003`)      |
+| Parameter       | Description                                                              |
+|-----------------|--------------------------------------------------------------------------|
+| `HLS_VIDEO_URL` | Full HLS stream URL from the camera's `data-videourl` attribute on 511PA |
 
-The stream URL is automatically constructed as:
-`https://cwwp2.dot.pa.gov/rtplive/{CAMERA_ID}/playlist.m3u8`
+> **Tip:** The video URL is found in the `data-videourl` attribute of the video container `<div>` element near the "Show Video" button on 511pa.com. It typically looks like `https://pa-seN.arcadis-ivds.com:8200/chan-XXXX/index.m3u8`.
+
+> **Note:** Not all 511PA cameras have video streams. If a camera's page shows "Video not available for this camera" instead of a "Show Video" button, it only supports still images.
 
 The traffic camera tile shows:
 - Live HLS video stream from the camera
@@ -381,7 +384,7 @@ http://localhost:5173/?config=contest.js
 | `iframedark\|`  | `iframedark\|https://example.com/page`       | Embedded website with dark background |
 | `dark\|`        | `dark\|https://example.com/page`             | Website with dark theme applied      |
 | `weather\|`     | `weather\|STATION\|APIKEY\|e`                | Weather Underground widget           |
-| `511pa\|`       | `511pa\|CAM-11-185`                          | 511PA live traffic camera (HLS video)|
+| `511pa\|`       | `511pa\|https://pa-se4.arcadis-ivds.com:8200/chan-3500/index.m3u8` | 511PA live traffic camera (HLS video)|
 
 **Video files** (`.mp4`, `.webm`, `.ogg`) are automatically detected and played as video.
 

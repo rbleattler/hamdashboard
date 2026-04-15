@@ -81,14 +81,15 @@ export function parseSource(src: string): ParsedSource {
   }
 
   if (is511PA(src)) {
-    // Format: 511pa|cameraId
-    // cameraId is the PennDOT camera identifier (e.g. "CAM-11-185" or "171_003")
-    // The module will construct the HLS stream URL: https://cwwp2.dot.pa.gov/rtplive/{cameraId}/playlist.m3u8
+    // Format: 511pa|HLS_URL
+    // HLS_URL is the full video stream URL from 511PA's data-videourl attribute.
+    // Find it on 511pa.com by inspecting a camera's "Show Video" button container
+    // and copying the data-videourl value (e.g. "https://pa-se4.arcadis-ivds.com:8200/chan-3500/index.m3u8").
     const parts = src.split('|');
-    const cameraId = parts[1] || '';
+    const streamUrl = parts[1] || '';
     return {
       type: 'trafficcam',
-      url: cameraId,
+      url: streamUrl,
       invert: false,
       darkFrame: false,
     };
