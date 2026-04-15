@@ -95,7 +95,7 @@ var aIMG = [
     "iframe|https://globe.adsbexchange.com/?airport=YYZ",
   ],
   ["WEATHER (WU)", "weather|KPAUPPER32|YOUR_API_KEY_HERE|e"],
-  ["511PA TRAFFIC CAM", "511pa|https://www.dot35.state.pa.us/public/Districts/District6/WebCams/D6Cam122.jpg|30"],
+  ["511PA TRAFFIC CAM", "511pa|CAM-11-185"],
   ["HF PROPAGATION",
     "https://www.hamqsl.com/solar101vhf.php"],
 ];

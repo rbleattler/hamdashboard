@@ -296,31 +296,34 @@ The weather tile shows temperature, humidity, and wind at a glance. Double-click
 
 ### 511PA Traffic Camera Integration
 
-The dashboard can display live traffic camera feeds from Pennsylvania's 511PA / PennDOT camera network. Camera images auto-refresh at a configurable interval to provide near-real-time views.
+The dashboard can display live video feeds from Pennsylvania's 511PA / PennDOT traffic camera network. Camera feeds are streamed as live HLS video directly in the tile.
 
 **To add a traffic camera tile:**
 
-1. Find a camera on [511PA](https://www.511pa.com) or locate the direct image URL (typically hosted at `dot35.state.pa.us`)
+1. Find a camera on [511PA](https://www.511pa.com) and note its camera ID (visible in the camera's URL or details, e.g. `CAM-11-185`)
 2. Add a tile using the `511pa|` prefix:
 
 ```js
 // config.js — add to aIMG array:
-["511PA TRAFFIC CAM", "511pa|https://www.dot35.state.pa.us/public/Districts/District6/WebCams/D6Cam122.jpg|30"],
+["511PA TRAFFIC CAM", "511pa|CAM-11-185"],
 ```
 
-The format is: `511pa|IMAGE_URL|REFRESH_SECONDS`
+The format is: `511pa|CAMERA_ID`
 
-| Parameter         | Description                                      |
-|-------------------|--------------------------------------------------|
-| `IMAGE_URL`       | Direct URL to the camera JPEG image              |
-| `REFRESH_SECONDS` | How often to refresh the image (default: 30)     |
+| Parameter   | Description                                                        |
+|-------------|--------------------------------------------------------------------|
+| `CAMERA_ID` | The PennDOT camera identifier (e.g. `CAM-11-185`, `171_003`)      |
+
+The stream URL is automatically constructed as:
+`https://cwwp2.dot.pa.gov/rtplive/{CAMERA_ID}/playlist.m3u8`
 
 The traffic camera tile shows:
-- The live camera image, auto-refreshing at the configured interval
-- A timestamp overlay showing when the image was last refreshed
-- An error state with automatic retry when the camera feed is unavailable
+- Live HLS video stream from the camera
+- A "LIVE" indicator overlay
+- An error state when the camera feed is unavailable
+- Video controls in the full-screen view
 
-Double-click the tile to open a full-screen view with manual refresh controls and refresh interval information.
+Double-click the tile to open a full-screen view with video controls and camera details.
 
 ---
 
@@ -378,7 +381,7 @@ http://localhost:5173/?config=contest.js
 | `iframedark\|`  | `iframedark\|https://example.com/page`       | Embedded website with dark background |
 | `dark\|`        | `dark\|https://example.com/page`             | Website with dark theme applied      |
 | `weather\|`     | `weather\|STATION\|APIKEY\|e`                | Weather Underground widget           |
-| `511pa\|`       | `511pa\|https://...cam.jpg\|30`              | 511PA traffic camera (auto-refresh)  |
+| `511pa\|`       | `511pa\|CAM-11-185`                          | 511PA live traffic camera (HLS video)|
 
 **Video files** (`.mp4`, `.webm`, `.ogg`) are automatically detected and played as video.
 

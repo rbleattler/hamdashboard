@@ -69,8 +69,7 @@ export function MenuOverlay({
             />
           ) : isTrafficCam && trafficCamParsed?.url ? (
             <TrafficCamModule
-              imageUrl={trafficCamParsed.url}
-              refreshSeconds={trafficCamParsed.refreshSeconds}
+              cameraId={trafficCamParsed.url}
             />
           ) : (
             <iframe

@@ -63,10 +63,6 @@ export interface ParsedSource {
   apiKey?: string;
   /** Units for weather: 'e' (imperial), 'm' (metric), 'h' (hybrid) */
   units?: string;
-  /** Camera name/label (only for type=trafficcam) */
-  cameraName?: string;
-  /** Refresh interval in seconds (only for type=trafficcam) */
-  refreshSeconds?: number;
 }
 
 export function parseSource(src: string): ParsedSource {
@@ -85,16 +81,16 @@ export function parseSource(src: string): ParsedSource {
   }
 
   if (is511PA(src)) {
-    // Format: 511pa|imageUrl or 511pa|imageUrl|refreshSeconds
+    // Format: 511pa|cameraId
+    // cameraId is the PennDOT camera identifier (e.g. "I-80 @ MM 273.2 EB" or a numeric ID like "171_003")
+    // The module will construct the HLS stream URL: https://cwwp2.dot.pa.gov/rtplive/{cameraId}/playlist.m3u8
     const parts = src.split('|');
-    const imageUrl = parts[1] || '';
-    const refreshSeconds = parts[2] ? parseInt(parts[2], 10) : 30;
+    const cameraId = parts[1] || '';
     return {
       type: 'trafficcam',
-      url: imageUrl,
+      url: cameraId,
       invert: false,
       darkFrame: false,
-      refreshSeconds: isNaN(refreshSeconds) ? 30 : refreshSeconds,
     };
   }
 

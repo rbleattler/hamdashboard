@@ -87,8 +87,7 @@ export function Tile({ config, index, paused, onFullScreen }: TileProps) {
 
       {parsed.type === 'trafficcam' && parsed.url && (
         <TrafficCamModule
-          imageUrl={parsed.url}
-          refreshSeconds={parsed.refreshSeconds}
+          cameraId={parsed.url}
           compact
           onDoubleClick={handleDoubleClick}
           onContextMenu={handleContextMenu}
