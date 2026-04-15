@@ -131,7 +131,7 @@ export function TrafficCamModule({
             />
           </>
         )}
-        {/* Camera ID overlay */}
+        {/* LIVE indicator overlay */}
         <div
           className="absolute top-1 right-1 text-white bg-black/60 px-1 rounded"
           style={{ fontSize: '0.6vw', fontFamily: '"Roboto Condensed", sans-serif' }}
