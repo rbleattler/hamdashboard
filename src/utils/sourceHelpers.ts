@@ -82,7 +82,7 @@ export function parseSource(src: string): ParsedSource {
 
   if (is511PA(src)) {
     // Format: 511pa|cameraId
-    // cameraId is the PennDOT camera identifier (e.g. "I-80 @ MM 273.2 EB" or a numeric ID like "171_003")
+    // cameraId is the PennDOT camera identifier (e.g. "CAM-11-185" or "171_003")
     // The module will construct the HLS stream URL: https://cwwp2.dot.pa.gov/rtplive/{cameraId}/playlist.m3u8
     const parts = src.split('|');
     const cameraId = parts[1] || '';

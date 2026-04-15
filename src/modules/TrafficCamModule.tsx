@@ -13,6 +13,9 @@ interface TrafficCamModuleProps {
 /** Base URL for PennDOT 511PA HLS camera streams */
 const STREAM_BASE = 'https://cwwp2.dot.pa.gov/rtplive';
 
+/** Whether hls.js polyfill is supported in this browser (static, won't change) */
+const HLS_JS_SUPPORTED = Hls.isSupported();
+
 /**
  * Traffic camera module for displaying live HLS video feeds from 511PA / PennDOT.
  * Streams live video using hls.js with automatic reconnection on failure.
@@ -29,9 +32,6 @@ export function TrafficCamModule({
   const [isLoading, setIsLoading] = useState(true);
 
   const streamUrl = `${STREAM_BASE}/${encodeURIComponent(cameraId)}/playlist.m3u8`;
-
-  // Check HLS support once (static value, doesn't change between renders)
-  const hlsSupported = Hls.isSupported();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -62,7 +62,7 @@ export function TrafficCamModule({
     }
 
     // hls.js not supported — nothing we can do
-    if (!hlsSupported) return;
+    if (!HLS_JS_SUPPORTED) return;
 
     const hls = new Hls({
       enableWorker: true,
@@ -103,18 +103,7 @@ export function TrafficCamModule({
       hls.destroy();
       hlsRef.current = null;
     };
-  }, [streamUrl, hlsSupported]);
-
-  // If HLS is not supported at all (no native support and no hls.js), show error
-  if (!hlsSupported) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-black">
-        <div className="text-yellow-400 text-center">
-          <span style={{ fontSize: compact ? '1.2vw' : '1.5rem' }}>⚠ HLS not supported</span>
-        </div>
-      </div>
-    );
-  }
+  }, [streamUrl]);
 
   if (compact) {
     return (
