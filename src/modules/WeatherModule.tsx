@@ -74,11 +74,11 @@ function TemperatureGauge({ temp, units, mini = false }: { temp: number | null; 
   const fraction = Math.max(0, Math.min(1, (t - min) / (max - min)));
 
   const cx = 100, cy = 95, r = mini ? 55 : 70;
-  // Arc from 180° (left) to 0° (right) — top half of circle
+  // Arc from 180° (left) clockwise through 270° (top) to 360°/0° (right) — top half of circle
   const arcStartDeg = 180;
-  const arcEndDeg = 0;
-  // Position along arc: 180° → fraction → 0°
-  const currentDeg = 180 - fraction * 180;
+  const arcEndDeg = 360;
+  // Position along arc: 180° → fraction → 360° (clockwise through top)
+  const currentDeg = 180 + fraction * 180;
   const dot = polarToCart(cx, cy, r, currentDeg);
   const sw = mini ? 6 : 10;
 
