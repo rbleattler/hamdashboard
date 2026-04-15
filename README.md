@@ -21,6 +21,7 @@ A customizable dashboard for ham radio operators. Display live radar images, sat
   - [Menu Items](#menu-items)
   - [RSS Feeds](#rss-feeds)
   - [Weather Underground Integration](#weather-underground-integration)
+  - [511PA Traffic Camera Integration](#511pa-traffic-camera-integration)
 - [Using the Dashboard](#using-the-dashboard)
   - [Keyboard and Mouse Controls](#keyboard-and-mouse-controls)
   - [Settings Page](#settings-page)
@@ -293,6 +294,34 @@ The format is: `weather|STATION_ID|API_KEY|UNITS`
 
 The weather tile shows temperature, humidity, and wind at a glance. Double-click the tile to open the full weather view with detailed gauges for temperature, wind direction, precipitation, and barometric pressure.
 
+### 511PA Traffic Camera Integration
+
+The dashboard can display live traffic camera feeds from Pennsylvania's 511PA / PennDOT camera network. Camera images auto-refresh at a configurable interval to provide near-real-time views.
+
+**To add a traffic camera tile:**
+
+1. Find a camera on [511PA](https://www.511pa.com) or locate the direct image URL (typically hosted at `dot35.state.pa.us`)
+2. Add a tile using the `511pa|` prefix:
+
+```js
+// config.js — add to aIMG array:
+["511PA TRAFFIC CAM", "511pa|https://www.dot35.state.pa.us/public/Districts/District6/WebCams/D6Cam122.jpg|30"],
+```
+
+The format is: `511pa|IMAGE_URL|REFRESH_SECONDS`
+
+| Parameter         | Description                                      |
+|-------------------|--------------------------------------------------|
+| `IMAGE_URL`       | Direct URL to the camera JPEG image              |
+| `REFRESH_SECONDS` | How often to refresh the image (default: 30)     |
+
+The traffic camera tile shows:
+- The live camera image, auto-refreshing at the configured interval
+- A timestamp overlay showing when the image was last refreshed
+- An error state with automatic retry when the camera feed is unavailable
+
+Double-click the tile to open a full-screen view with manual refresh controls and refresh interval information.
+
 ---
 
 ## Using the Dashboard
@@ -303,6 +332,7 @@ The weather tile shows temperature, humidity, and wind at a glance. Double-click
 |----------------------------------|------------------------------------------------------|
 | **Double-click** an image tile   | Open full-screen view of that image                  |
 | **Double-click** a weather tile  | Open the full weather detail page                    |
+| **Double-click** a traffic cam tile | Open full-screen traffic camera view              |
 | **Double-click** in full screen  | Close full-screen view                               |
 | **Right-click** an image tile    | Switch to the next image (for tiles with multiple sources) |
 | **Mouse wheel** (in full screen) | Zoom in/out                                          |
@@ -348,6 +378,7 @@ http://localhost:5173/?config=contest.js
 | `iframedark\|`  | `iframedark\|https://example.com/page`       | Embedded website with dark background |
 | `dark\|`        | `dark\|https://example.com/page`             | Website with dark theme applied      |
 | `weather\|`     | `weather\|STATION\|APIKEY\|e`                | Weather Underground widget           |
+| `511pa\|`       | `511pa\|https://...cam.jpg\|30`              | 511PA traffic camera (auto-refresh)  |
 
 **Video files** (`.mp4`, `.webm`, `.ogg`) are automatically detected and played as video.
 
@@ -436,6 +467,7 @@ hamdashboard/
 │   │   ├── ImageModule  # Image display
 │   │   ├── VideoModule  # Video player
 │   │   ├── WeatherModule # Weather Underground widget
+│   │   ├── TrafficCamModule # 511PA traffic camera feed
 │   │   └── WebContentModule # Iframe content
 │   ├── hooks/           # React hooks
 │   └── utils/           # Helper functions

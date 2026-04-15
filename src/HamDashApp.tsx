@@ -269,6 +269,16 @@ function App() {
         side: 'L',
         type: 'user',
       });
+    } else if (parsed.type === 'trafficcam') {
+      // Open the traffic cam module as a full overlay
+      setMenuOverlayItem({
+        color: '2196F3',
+        text: tile.titles[0] || 'Traffic Camera',
+        url: source,
+        scale: 1,
+        side: 'L',
+        type: 'user',
+      });
     } else {
       setFullScreenIndex(index);
     }

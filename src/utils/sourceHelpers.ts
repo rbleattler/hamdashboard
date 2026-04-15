@@ -1,5 +1,5 @@
 /**
- * Helpers for parsing tile source URL prefixes (iframe|, iframedark|, invert|, dark|, weather|).
+ * Helpers for parsing tile source URL prefixes (iframe|, iframedark|, invert|, dark|, weather|, 511pa|).
  */
 
 const videoExtensions = ['.mp4', '.webm', '.ogg', '.ogv'];
@@ -35,6 +35,10 @@ export function isWeather(src: string): boolean {
   return src.startsWith('weather|');
 }
 
+export function is511PA(src: string): boolean {
+  return src.startsWith('511pa|');
+}
+
 /** Strip known prefixes and return the clean URL */
 export function cleanSource(src: string): string {
   return src
@@ -48,7 +52,7 @@ export function cleanSource(src: string): string {
  * Parse a source string to determine its type and clean URL.
  */
 export interface ParsedSource {
-  type: 'image' | 'video' | 'iframe' | 'weather';
+  type: 'image' | 'video' | 'iframe' | 'weather' | 'trafficcam';
   url: string;
   invert: boolean;
   darkFrame: boolean;
@@ -59,6 +63,10 @@ export interface ParsedSource {
   apiKey?: string;
   /** Units for weather: 'e' (imperial), 'm' (metric), 'h' (hybrid) */
   units?: string;
+  /** Camera name/label (only for type=trafficcam) */
+  cameraName?: string;
+  /** Refresh interval in seconds (only for type=trafficcam) */
+  refreshSeconds?: number;
 }
 
 export function parseSource(src: string): ParsedSource {
@@ -73,6 +81,20 @@ export function parseSource(src: string): ParsedSource {
       stationId: parts[1] || '',
       apiKey: parts[2] || '',
       units: parts[3] || 'e',
+    };
+  }
+
+  if (is511PA(src)) {
+    // Format: 511pa|imageUrl or 511pa|imageUrl|refreshSeconds
+    const parts = src.split('|');
+    const imageUrl = parts[1] || '';
+    const refreshSeconds = parts[2] ? parseInt(parts[2], 10) : 30;
+    return {
+      type: 'trafficcam',
+      url: imageUrl,
+      invert: false,
+      darkFrame: false,
+      refreshSeconds: isNaN(refreshSeconds) ? 30 : refreshSeconds,
     };
   }
 

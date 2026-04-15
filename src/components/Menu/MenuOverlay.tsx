@@ -1,6 +1,6 @@
 import type { MenuItem } from '../../config/configTypes';
-import { isDark, isWeather, parseSource } from '../../utils/sourceHelpers';
-import { WeatherModule } from '../../modules';
+import { isDark, isWeather, is511PA, parseSource } from '../../utils/sourceHelpers';
+import { WeatherModule, TrafficCamModule } from '../../modules';
 import { MENU_WIDTH } from '../../utils/layoutConstants';
 
 interface MenuOverlayProps {
@@ -22,11 +22,14 @@ export function MenuOverlay({
   if (!visible || !menuItem) return null;
 
   const isWeatherUrl = isWeather(menuItem.url);
-  const dark = !isWeatherUrl && isDark(menuItem.url);
+  const isTrafficCam = is511PA(menuItem.url);
+  const dark = !isWeatherUrl && !isTrafficCam && isDark(menuItem.url);
   const url = dark ? menuItem.url.replace('dark|', '') : menuItem.url;
 
   // Parse weather source if applicable
   const weatherParsed = isWeatherUrl ? parseSource(menuItem.url) : null;
+  // Parse traffic cam source if applicable
+  const trafficCamParsed = isTrafficCam ? parseSource(menuItem.url) : null;
 
   return (
     <div className="fixed inset-0 bg-black z-[1]" style={{ left: MENU_WIDTH, right: MENU_WIDTH }}>
@@ -39,7 +42,7 @@ export function MenuOverlay({
             {menuItem.text}
           </span>
           <div className="flex gap-2">
-            {!isWeatherUrl && (
+            {!isWeatherUrl && !isTrafficCam && (
               <button
                 onClick={() => {
                   window.open(url, '_blank', 'noopener,noreferrer');
@@ -63,6 +66,11 @@ export function MenuOverlay({
               stationId={weatherParsed.stationId}
               apiKey={weatherParsed.apiKey}
               units={weatherParsed.units}
+            />
+          ) : isTrafficCam && trafficCamParsed?.url ? (
+            <TrafficCamModule
+              imageUrl={trafficCamParsed.url}
+              refreshSeconds={trafficCamParsed.refreshSeconds}
             />
           ) : (
             <iframe
