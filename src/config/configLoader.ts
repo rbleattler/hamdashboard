@@ -216,12 +216,13 @@ export function processRawConfig(raw: JsonConfig): DashboardConfig {
 
   let tiles: TileConfig[];
   if (processed.aIMG) {
-    // Detect format: if third element is a number, it's JSON format
+    // Detect format: if the 3rd element (index 2) is a number, it's JSON format
+    // (the optional 4th element may be a TitleStyle object)
     const firstItem = processed.aIMG[0];
     if (
       firstItem &&
       firstItem.length >= 3 &&
-      typeof firstItem[firstItem.length - 1] === 'number'
+      typeof firstItem[2] === 'number'
     ) {
       tiles = parseTilesFromJson(
         processed.aIMG as Array<[string | string[], string[] | string, number?, TitleStyle?]>
