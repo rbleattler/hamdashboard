@@ -4,6 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 
+import { cloudflare } from "@cloudflare/vite-plugin";
+
 /**
  * Vite plugin that replaces __PLACEHOLDER__ tokens in public config files
  * served during dev with values from environment variables / .env files.
@@ -45,10 +47,10 @@ function injectSecretsPlugin(): import('vite').Plugin {
         }
       })
     },
-  }
+  };
 }
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), injectSecretsPlugin()],
+  plugins: [react(), tailwindcss(), injectSecretsPlugin(), cloudflare()],
 })
