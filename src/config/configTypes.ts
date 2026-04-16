@@ -14,9 +14,9 @@ export type LegacyTileItem = [string | string[], ...string[]];
 
 /**
  * A single dashboard tile in JSON format:
- * [title, urls | url, delay?] where urls can be string[] or string
+ * [title, urls | url, delay?, titleStyle?] where urls can be string[] or string
  */
-export type JsonTileItem = [string | string[], string[] | string, number?];
+export type JsonTileItem = [string | string[], string[] | string, number?, TitleStyle?];
 
 /** A single RSS feed: [url, refreshIntervalMinutes] */
 export type RssFeedItem = [string, number];
@@ -31,11 +31,34 @@ export interface MenuItem {
   type: 'core' | 'config' | 'user';
 }
 
+/** Valid positions for the title overlay on a tile */
+export type TitlePosition =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right'
+  | 'none';
+
+/** Styling options for the title overlay on a tile */
+export interface TitleStyle {
+  /** Where to display the title; 'none' hides it entirely (default: 'bottom-center') */
+  position?: TitlePosition;
+  /** Background opacity from 0 (transparent) to 1 (opaque) (default: 1) */
+  opacity?: number;
+  /** CSS color for the title text (default: '#ffffff') */
+  fontColor?: string;
+  /** CSS color for the title background (default: '#000000') */
+  bgColor?: string;
+}
+
 /** Parsed tile for use in components */
 export interface TileConfig {
   titles: string[];
   sources: string[];
   rotationInterval: number;
+  titleStyle?: TitleStyle;
 }
 
 /** The full dashboard configuration */
@@ -61,6 +84,7 @@ export interface LegacyJsConfig {
   aURL?: LegacyMenuItem[];
   aIMG?: LegacyTileItem[];
   tileDelay?: number[];
+  tileStyles?: TitleStyle[];
   aRSS?: RssFeedItem[];
 }
 

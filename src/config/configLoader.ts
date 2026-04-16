@@ -2,6 +2,7 @@ import type {
   DashboardConfig,
   MenuItem,
   TileConfig,
+  TitleStyle,
   LegacyMenuItem,
   RssFeedItem,
   JsonConfig,
@@ -145,7 +146,8 @@ function parseMenuItem(item: LegacyMenuItem): MenuItem {
 
 function parseTilesFromLegacy(
   aIMG: Array<[string | string[], ...string[]]>,
-  tileDelay?: number[]
+  tileDelay?: number[],
+  tileStyles?: TitleStyle[]
 ): TileConfig[] {
   return aIMG.map((item, index) => {
     const titleRaw = item[0];
@@ -153,12 +155,14 @@ function parseTilesFromLegacy(
     const sources = item.slice(1) as string[];
     const interval =
       tileDelay && tileDelay[index] ? tileDelay[index] : 30000;
-    return { titles, sources, rotationInterval: interval };
+    const titleStyle =
+      tileStyles && tileStyles[index] ? tileStyles[index] : undefined;
+    return { titles, sources, rotationInterval: interval, titleStyle };
   });
 }
 
 function parseTilesFromJson(
-  aIMG: Array<[string | string[], string[] | string, number?]>
+  aIMG: Array<[string | string[], string[] | string, number?, TitleStyle?]>
 ): TileConfig[] {
   return aIMG.map((subArray) => {
     const titleRaw = subArray[0];
@@ -172,7 +176,9 @@ function parseTilesFromJson(
     }
 
     const delay = subArray.length >= 3 && subArray[2] ? subArray[2] : 30000;
-    return { titles, sources, rotationInterval: delay };
+    const titleStyle =
+      subArray.length >= 4 && subArray[3] ? subArray[3] : undefined;
+    return { titles, sources, rotationInterval: delay, titleStyle };
   });
 }
 
@@ -218,13 +224,15 @@ export function processRawConfig(raw: JsonConfig): DashboardConfig {
       typeof firstItem[firstItem.length - 1] === 'number'
     ) {
       tiles = parseTilesFromJson(
-        processed.aIMG as Array<[string | string[], string[] | string, number?]>
+        processed.aIMG as Array<[string | string[], string[] | string, number?, TitleStyle?]>
       );
     } else {
       // Legacy format: [title, url1, url2, ...]
+      const rawAsLegacy = processed as unknown as { tileDelay?: number[]; tileStyles?: TitleStyle[] };
       tiles = parseTilesFromLegacy(
         processed.aIMG as unknown as Array<[string | string[], ...string[]]>,
-        (processed as unknown as { tileDelay?: number[] }).tileDelay
+        rawAsLegacy.tileDelay,
+        rawAsLegacy.tileStyles
       );
     }
   } else if (processed.aImages) {
@@ -265,6 +273,7 @@ declare global {
     aURL?: LegacyMenuItem[];
     aIMG?: Array<[string | string[], ...string[]]>;
     tileDelay?: number[];
+    tileStyles?: TitleStyle[];
     aRSS?: RssFeedItem[];
   }
 }
@@ -325,16 +334,19 @@ function loadScriptConfig(
       if (window.aIMG && window.tileDelay) {
         rawConfig.aIMG = window.aIMG.map((item, i) => {
           const [title, ...urls] = item;
-          return [title, urls, window.tileDelay![i] || 30000] as [
+          const style = window.tileStyles?.[i];
+          return [title, urls, window.tileDelay![i] || 30000, style] as [
             string | string[],
             string[],
             number,
+            TitleStyle | undefined,
           ];
         });
       } else if (window.aIMG) {
-        rawConfig.aIMG = window.aIMG.map((item) => {
+        rawConfig.aIMG = window.aIMG.map((item, i) => {
           const [title, ...urls] = item;
-          return [title, urls, 30000] as [string | string[], string[], number];
+          const style = window.tileStyles?.[i];
+          return [title, urls, 30000, style] as [string | string[], string[], number, TitleStyle | undefined];
         });
       }
 
@@ -461,7 +473,10 @@ export function exportToConfigJs(config: DashboardConfig): string {
 
   const tileDelay = config.tiles.map((t) => t.rotationInterval);
 
-  return `// CUT START
+  const hasTileStyles = config.tiles.some((t) => t.titleStyle);
+  const tileStyles = config.tiles.map((t) => t.titleStyle || {});
+
+  let output = `// CUT START
 var disableSetup = ${config.disableSetup};
 var topBarCenterText = "${config.topBarCenterText}";
 
@@ -479,9 +494,20 @@ var aRSS = ${JSON.stringify(config.rssFeeds, null, 2)};
 var aIMG = ${JSON.stringify(aIMG, null, 2)};
 
 // Image rotation intervals in milliseconds per tile
-var tileDelay = ${JSON.stringify(tileDelay, null, 2)};
+var tileDelay = ${JSON.stringify(tileDelay, null, 2)};`;
+
+  if (hasTileStyles) {
+    output += `
+
+// Title style overrides per tile (position, opacity, fontColor, bgColor)
+// position: "top-left"|"top-center"|"top-right"|"bottom-left"|"bottom-center"|"bottom-right"|"none"
+var tileStyles = ${JSON.stringify(tileStyles, null, 2)};`;
+  }
+
+  output += `
 
 // CUT END`;
+  return output;
 }
 
 /**
@@ -502,12 +528,17 @@ export function configToStoredSettings(config: DashboardConfig): StoredSettings 
     );
 
   const aImages = config.tiles.map(
-    (t) =>
-      [
+    (t) => {
+      const base: [string | string[], string[], number] = [
         t.titles.length === 1 ? t.titles[0] : t.titles,
         t.sources,
         t.rotationInterval,
-      ] as [string | string[], string[], number]
+      ];
+      if (t.titleStyle) {
+        return [...base, t.titleStyle] as [string | string[], string[], number, TitleStyle];
+      }
+      return base;
+    }
   );
 
   return {

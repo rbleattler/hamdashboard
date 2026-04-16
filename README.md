@@ -18,6 +18,7 @@ A customizable dashboard for ham radio operators. Display live radar images, sat
   - [Config File Formats](#config-file-formats)
   - [Grid Layout](#grid-layout)
   - [Dashboard Tiles](#dashboard-tiles)
+    - [Title Styling](#title-styling)
   - [Menu Items](#menu-items)
   - [RSS Feeds](#rss-feeds)
   - [Weather Underground Integration](#weather-underground-integration)
@@ -232,6 +233,48 @@ A tile can rotate between multiple images:
 ```
 
 The tile will cycle through the images and update the title to match.
+
+#### Title Styling
+
+Each tile's title overlay can be independently customized — you can change its position, opacity, text color, background color, or hide it entirely.
+
+**JavaScript format (`config.js`):**
+
+```js
+// Title style overrides per tile (one entry per tile, use {} for defaults)
+var tileStyles = [
+  { "position": "top-left", "opacity": 0.8, "fontColor": "#ffff00", "bgColor": "#333333" },
+  { "position": "none" },       // hides the title completely
+  {},                            // uses all defaults
+  { "position": "bottom-right", "bgColor": "#003366" },
+];
+```
+
+**JSON format (`config.json`):**
+
+Add an optional 4th element (object) to any tile entry:
+
+```json
+{
+  "aIMG": [
+    ["RADAR", ["https://example.com/radar.gif"], 10000,
+      { "position": "top-center", "opacity": 0.7, "fontColor": "#ffffff", "bgColor": "#000000" }
+    ],
+    ["SATELLITE", ["https://example.com/sat.gif"], 10000]
+  ]
+}
+```
+
+**Title Style Options:**
+
+| Property    | Default          | Description                                                                                  |
+|-------------|------------------|----------------------------------------------------------------------------------------------|
+| `position`  | `"bottom-center"`| Where to show the title. Options: `"top-left"`, `"top-center"`, `"top-right"`, `"bottom-left"`, `"bottom-center"`, `"bottom-right"`, or `"none"` to hide |
+| `opacity`   | `1`              | Overall opacity of the title box (0 = fully transparent, 1 = fully opaque)                   |
+| `fontColor` | `"#ffffff"`      | CSS color for the title text                                                                 |
+| `bgColor`   | `"#000000"`      | CSS color for the title background                                                           |
+
+You can also configure title styles per tile in the **Settings Page** (Setup → Dashboard Tiles → Title Style column).
 
 ### Menu Items
 

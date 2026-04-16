@@ -1,14 +1,43 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTileRotation } from '../../hooks/useTileRotation';
 import { ImageModule, VideoModule, WebContentModule, WeatherModule } from '../../modules';
 import { parseSource } from '../../utils/sourceHelpers';
-import type { TileConfig } from '../../config/configTypes';
+import type { TileConfig, TitlePosition, TitleStyle } from '../../config/configTypes';
 
 interface TileProps {
   config: TileConfig;
   index: number;
   paused: boolean;
   onFullScreen: (index: number) => void;
+}
+
+/** Map a TitlePosition to CSS positioning classes */
+function getTitlePositionStyle(position: TitlePosition): React.CSSProperties {
+  switch (position) {
+    case 'top-left':
+      return { top: '6%', left: '4%', transform: 'none' };
+    case 'top-center':
+      return { top: '6%', left: '50%', transform: 'translateX(-50%)' };
+    case 'top-right':
+      return { top: '6%', right: '4%', transform: 'none' };
+    case 'bottom-left':
+      return { bottom: '6%', left: '4%', transform: 'none' };
+    case 'bottom-right':
+      return { bottom: '6%', right: '4%', transform: 'none' };
+    case 'bottom-center':
+    default:
+      return { bottom: '6%', left: '50%', transform: 'translateX(-50%)' };
+  }
+}
+
+/** Resolve effective title style with defaults */
+function resolveStyle(style?: TitleStyle) {
+  return {
+    position: style?.position ?? 'bottom-center',
+    opacity: style?.opacity ?? 1,
+    fontColor: style?.fontColor ?? '#ffffff',
+    bgColor: style?.bgColor ?? '#000000',
+  };
 }
 
 export function Tile({ config, index, paused, onFullScreen }: TileProps) {
@@ -27,6 +56,8 @@ export function Tile({ config, index, paused, onFullScreen }: TileProps) {
     config.titles.length > 1
       ? config.titles[currentIndex % config.titles.length] || ''
       : config.titles[0] || '';
+
+  const titleStyle = useMemo(() => resolveStyle(config.titleStyle), [config.titleStyle]);
 
   const handleContextMenu = useCallback(
     (e: React.MouseEvent) => {
@@ -50,6 +81,7 @@ export function Tile({ config, index, paused, onFullScreen }: TileProps) {
   );
 
   const showOverlay = overlayVisible && (parsed.type === 'video' || parsed.type === 'iframe');
+  const showTitle = currentTitle && titleStyle.position !== 'none';
 
   return (
     <div
@@ -104,10 +136,14 @@ export function Tile({ config, index, paused, onFullScreen }: TileProps) {
       )}
 
       {/* Title overlay */}
-      {currentTitle && (
+      {showTitle && (
         <div
-          className="absolute bottom-[6%] left-1/2 -translate-x-1/2 text-white bg-black px-[0.25vw] z-[2]"
+          className="absolute px-[0.25vw] z-[2]"
           style={{
+            ...getTitlePositionStyle(titleStyle.position as TitlePosition),
+            color: titleStyle.fontColor,
+            backgroundColor: titleStyle.bgColor,
+            opacity: titleStyle.opacity,
             fontSize: '1vw',
             fontFamily: '"Roboto Condensed", sans-serif',
             fontWeight: 300,

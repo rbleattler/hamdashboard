@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { DashboardConfig } from '../../config/configTypes';
+import type { DashboardConfig, TitleStyle, TitlePosition } from '../../config/configTypes';
 import { exportToConfigJs, configToStoredSettings } from '../../config/configLoader';
 import { MENU_WIDTH } from '../../utils/layoutConstants';
 
@@ -102,7 +102,8 @@ export function SettingsPage({
               aURL,
               aIMG,
               aRSS,
-              tileDelay
+              tileDelay,
+              tileStyles: typeof tileStyles !== 'undefined' ? tileStyles : undefined
             };
           })()`;
           const indirectEval = globalThis.eval;
@@ -127,7 +128,10 @@ export function SettingsPage({
             aImages: (imported.aIMG || []).map(
               (item: (string | string[])[], index: number) => {
                 const [first, ...rest] = item;
-                return [first, rest, imported.tileDelay?.[index] || 30000];
+                const style = imported.tileStyles?.[index];
+                const base = [first, rest, imported.tileDelay?.[index] || 30000];
+                if (style) base.push(style);
+                return base;
               }
             ),
             aRSS: imported.aRSS || [],
@@ -174,13 +178,14 @@ export function SettingsPage({
   const updateTile = (
     index: number,
     field: string,
-    value: string | number | string[]
+    value: string | number | string[] | TitleStyle
   ) => {
     const tiles = [...localConfig.tiles];
     const tile = { ...tiles[index] };
     if (field === 'title') tile.titles = [value as string];
     if (field === 'sources') tile.sources = value as string[];
     if (field === 'rotationInterval') tile.rotationInterval = value as number;
+    if (field === 'titleStyle') tile.titleStyle = value as TitleStyle;
     tiles[index] = tile;
     updateConfig({ tiles });
   };
@@ -485,7 +490,7 @@ export function SettingsPage({
             <table className="w-full" style={{ borderCollapse: 'separate', borderSpacing: '0 2px' }}>
               <thead>
                 <tr>
-                  {['Title', 'URLs', 'Rotation (ms)'].map((h) => (
+                  {['Title', 'URLs', 'Rotation (ms)', 'Title Style'].map((h) => (
                     <th
                       key={h}
                       className="text-left text-xs font-medium px-3 py-2"
@@ -497,7 +502,11 @@ export function SettingsPage({
                 </tr>
               </thead>
               <tbody>
-                {localConfig.tiles.map((tile, i) => (
+                {localConfig.tiles.map((tile, i) => {
+                  const ts: TitleStyle = tile.titleStyle || {};
+                  const updateStyle = (patch: Partial<TitleStyle>) =>
+                    updateTile(i, 'titleStyle', { ...ts, ...patch });
+                  return (
                   <tr
                     key={i}
                     style={{ backgroundColor: 'hsl(210deg 15% 19%)' }}
@@ -552,7 +561,7 @@ export function SettingsPage({
                         + Add URL
                       </button>
                     </td>
-                    <td className="px-3 py-2 rounded-r-md align-top">
+                    <td className="px-3 py-2 align-top">
                       <input
                         type="number"
                         className="settings-input w-24"
@@ -566,8 +575,63 @@ export function SettingsPage({
                         }
                       />
                     </td>
+                    <td className="px-3 py-2 rounded-r-md align-top">
+                      <div className="flex flex-col gap-1" style={{ minWidth: 160 }}>
+                        <label className="text-xs" style={{ color: 'hsl(210deg 10% 55%)' }}>Position</label>
+                        <select
+                          className="settings-input"
+                          value={ts.position || 'bottom-center'}
+                          onChange={(e) =>
+                            updateStyle({ position: e.target.value as TitlePosition })
+                          }
+                        >
+                          <option value="top-left">Top Left</option>
+                          <option value="top-center">Top Center</option>
+                          <option value="top-right">Top Right</option>
+                          <option value="bottom-left">Bottom Left</option>
+                          <option value="bottom-center">Bottom Center</option>
+                          <option value="bottom-right">Bottom Right</option>
+                          <option value="none">Hidden</option>
+                        </select>
+                        <label className="text-xs" style={{ color: 'hsl(210deg 10% 55%)' }}>Opacity</label>
+                        <input
+                          type="range"
+                          min={0}
+                          max={1}
+                          step={0.05}
+                          value={ts.opacity ?? 1}
+                          onChange={(e) =>
+                            updateStyle({ opacity: parseFloat(e.target.value) })
+                          }
+                          style={{ accentColor: 'hsl(200deg 80% 50%)' }}
+                        />
+                        <div className="flex items-center gap-2">
+                          <label className="text-xs" style={{ color: 'hsl(210deg 10% 55%)' }}>Font</label>
+                          <input
+                            type="color"
+                            className="w-6 h-6 rounded cursor-pointer border-0"
+                            style={{ backgroundColor: 'transparent' }}
+                            value={ts.fontColor || '#ffffff'}
+                            onChange={(e) =>
+                              updateStyle({ fontColor: e.target.value })
+                            }
+                          />
+                          <label className="text-xs" style={{ color: 'hsl(210deg 10% 55%)' }}>Bg</label>
+                          <input
+                            type="color"
+                            className="w-6 h-6 rounded cursor-pointer border-0"
+                            style={{ backgroundColor: 'transparent' }}
+                            value={ts.bgColor || '#000000'}
+                            onChange={(e) =>
+                              updateStyle({ bgColor: e.target.value })
+                            }
+                          />
+                        </div>
+                      </div>
+                    </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>

@@ -60,7 +60,8 @@
         "https://radar.weather.gov/ridge/standard/KDIX_loop.gif",
         "https://www.mash4077tv.com/images/misc/spotlight/085_the_gun.jpg"
       ],
-      10000
+      10000,
+      { "position": "bottom-center", "opacity": 0.8, "fontColor": "#ffffff", "bgColor": "#000000" }
     ],
     [
       "FORECAST",
