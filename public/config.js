@@ -194,7 +194,7 @@ var tileDelay = [
 // position: "top-left"|"top-center"|"top-right"|"bottom-left"|"bottom-center"|"bottom-right"|"none"
 // Omit or use {} for default styling. Only tiles that need customization need entries.
 // var tileStyles = [
-//   { "position": "bottom-center", "opacity": 0.8, "fontColor": "#ffffff", "bgColor": "#000000" },
+   { "position": "top-center", "opacity": 0.8, "fontColor": "#ffffff", "bgColor": "#000000" },
 //   { "position": "top-left" },
 //   {},
 //   {},
