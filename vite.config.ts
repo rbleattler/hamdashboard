@@ -50,7 +50,7 @@ function injectSecretsPlugin(): import('vite').Plugin {
   };
 }
 
-import { cloudflare } from "@cloudflare/vite-plugin";
+
 
 
 // https://vite.dev/config/
