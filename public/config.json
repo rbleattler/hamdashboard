@@ -60,10 +60,10 @@
         "https://radar.weather.gov/ridge/standard/KDIX_loop.gif",
         "https://www.mash4077tv.com/images/misc/spotlight/085_the_gun.jpg"
       ],
-      11200
+      10000
     ],
     [
-      "FORCAST",
+      "FORECAST",
       [
         "https://www.wpc.ncep.noaa.gov/noaa/noaa.gif",
         "https://www.cpc.ncep.noaa.gov/products/stratosphere/uv_index/uvi_map.gif",
@@ -78,14 +78,14 @@
       [
         "https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/GEOCOLOR/GOES16-CONUS-GEOCOLOR-625x375.gif"
       ],
-      11000
+      10000
     ],
     [
       "SATELLITE LOCAL",
       [
         "https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/ne/GEOCOLOR/GOES16-NE-GEOCOLOR-600x600.gif"
       ],
-      10100
+      10000
     ],
     [
       "LIGHTNING",
@@ -93,7 +93,7 @@
         "https://images.lightningmaps.org/blitzortung/america/index.php?animation=usa",
         "https://www.blitzortung.org/en/Images/image_b_ny.png"
       ],
-      10200
+      10000
     ],
     [
       "WEATHER ALERTS LOCAL",
@@ -101,10 +101,10 @@
         "https://www.weather.gov/images/phi/ghwo/LightningDay1.jpg",
         "https://www.weather.gov/images/phi/ghwo/ThunderstormWindDay1.jpg",
         "https://www.weather.gov/images/phi/ghwo/SevereThunderstormsDay1.jpg",
-        "https://www.weather.gov/images/phi/ghwo/WindDay1.jpg",
-        "iframe|https://www.broadcastify.com/dashboards/?uuid=7f23eafa-3998-11f1-bb32-0ef97433b5f9"
+        "https://www.weather.gov/images/phi/ghwo/WindDay1.jpg"
+        
       ],
-      10500
+      10000
     ],
     [
       "AIR TRAFFIC",
@@ -112,7 +112,7 @@
         "iframe|https://globe.adsbexchange.com/?airport=PHL",
         "iframe|https://globe.adsbexchange.com/?airport=EWR"
       ],
-      10300
+      10000
     ],
     [
       "TRAFFIC CAMS I-95 SEPA",
@@ -125,7 +125,7 @@
         "https://511pa.com/map/Cctv/2848--10?t=1719108490",
         "https://www.511pa.com/map/Cctv/2846--10?t=1730241450"
       ],
-      10600
+      10000
     ],
     [
       "BOREALIS",
@@ -135,7 +135,7 @@
         "https://services.swpc.noaa.gov/images/geospace/geospace_7_day.png",
         "https://services.swpc.noaa.gov/images/notifications-in-effect-timeline.png"
       ],
-      30400
+      10000
     ],
     [
       "GREY LINE",
@@ -150,7 +150,7 @@
         "https://www.heavens-above.com/orbitdisplay.aspx?icon=default&width=600&height=300&mode=M&satid=44909",
         "https://www.heavens-above.com/orbitdisplay.aspx?icon=iss&width=600&height=300&mode=M&satid=25544"
       ],
-      300000
+      10000
     ],
     [
       "PROPAGATION",
@@ -163,7 +163,7 @@
         "https://www.hamqsl.com/solar100sc.php",
         "https://www.hamqsl.com/solarpich.php"
       ],
-      10800
+      10000
     ]
   ],
   "aRSS": [
