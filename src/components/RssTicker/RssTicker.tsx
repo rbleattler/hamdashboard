@@ -31,9 +31,9 @@ export function RssTicker({ feeds }: RssTickerProps) {
       className="w-full overflow-hidden whitespace-nowrap box-border shrink-0"
       style={{
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        padding: '3px 0',
+        padding: '4.5px 0',
         fontFamily: '"Victor Mono", sans-serif',
-        fontSize: '1.4vh',
+        fontSize: '2.1vh',
         fontWeight: 'bold',
       }}
     >
